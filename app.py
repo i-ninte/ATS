@@ -34,12 +34,56 @@ def input_pdf_text(uploaded_file):
         return None
 
 # Streamlit app interface
-st.title("ATS Resume Evaluator")
+st.set_page_config(
+    page_title="JobMatch: ATS Resume Evaluator", 
+    page_icon="💼", 
+    layout="centered", 
+    initial_sidebar_state="collapsed"
+)
+
+# Custom CSS for aesthetics
+st.markdown("""
+    <style>
+        .main {
+            background-color: #f0f2f6;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        textarea {
+            background-color: #fff9e6;
+            border: 1px solid #FF9900;
+        }
+        .css-1d391kg p {
+            color: #000080;
+        }
+        .stButton button {
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 10px;
+            padding: 10px 20px;
+        }
+        .stButton button:hover {
+            background-color: #45a049;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# App title
+st.title("JobMatch: ATS Resume Evaluator 💼")
+
+# Instructions and description
+st.markdown("""
+    Welcome to **JobMatch**, the ATS Resume Evaluator!  
+    Simply upload your resume, enter the job description, and get a detailed analysis of how well your resume matches the job, with suggestions for improvement.
+""")
 
 # Job description input
+st.subheader("Job Description")
 job_description = st.text_area("Enter the Job Description", height=150)
 
 # Resume file upload
+st.subheader("Upload Resume")
 uploaded_file = st.file_uploader("Upload your resume as a PDF", type=["pdf"])
 
 # Submit button
@@ -73,6 +117,6 @@ if st.button("Submit"):
             
             if response:
                 st.success("Evaluation completed.")
-                st.write(response)
+                st.json(response)  # Displaying JSON structure in a readable format
             else:
                 st.error("Failed to generate a response. Please try again.")
