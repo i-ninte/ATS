@@ -141,7 +141,3 @@ The results include the **matching percentage**, **missing keywords**, and a **p
 ## Contributing
 
 Contributions are welcome! If you'd like to contribute, please fork the repository and submit a pull request.
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
