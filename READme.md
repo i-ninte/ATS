@@ -28,8 +28,8 @@ To run the project locally, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/jobmatch-ats-evaluator.git
-   cd jobmatch-ats-evaluator
+   git clone https://github.com/i-ninte/ATS.git
+   cd ATS
    ```
 
 2. Install the required dependencies:
