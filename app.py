@@ -41,21 +41,20 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for aesthetics
+# Custom CSS for light and dark modes
 st.markdown("""
     <style>
-        .main {
+        /* Light mode */
+        body, .main {
             background-color: #f0f2f6;
+            color: #000;
         }
-        h1 {
+        h1, h2, h3, h4, h5, h6, label {
             color: #4CAF50;
         }
-        textarea {
-            background-color: #fff9e6;
-            border: 1px solid #FF9900;
-        }
-        .css-1d391kg p {
-            color: #000080;
+        p, textarea, .stTextInput input, .stTextArea textarea {
+            color: #000;
+            background-color: #fff;
         }
         .stButton button {
             background-color: #4CAF50;
@@ -65,6 +64,31 @@ st.markdown("""
         }
         .stButton button:hover {
             background-color: #45a049;
+        }
+
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            body, .main {
+                background-color: #121212;
+                color: #fff;
+            }
+            h1, h2, h3, h4, h5, h6, label {
+                color: #80d4ff;
+            }
+            p, textarea, .stTextInput input, .stTextArea textarea {
+                background-color: #333;
+                color: #fff;
+                border: 1px solid #80d4ff;
+            }
+            .stButton button {
+                background-color: #80d4ff;
+                color: black;
+                border-radius: 10px;
+                padding: 10px 20px;
+            }
+            .stButton button:hover {
+                background-color: #66c2e8;
+            }
         }
     </style>
 """, unsafe_allow_html=True)
