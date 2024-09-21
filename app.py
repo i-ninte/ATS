@@ -3,6 +3,8 @@ import google.generativeai as genai
 import os
 import PyPDF2 as pdf
 from dotenv import load_dotenv
+import json
+import re
 
 # Load environment variables
 load_dotenv()
@@ -117,30 +119,73 @@ if st.button("Submit"):
     elif not uploaded_file:
         st.error("Please upload your resume.")
     else:
-        # Extract text from PDF
         resume_text = input_pdf_text(uploaded_file)
-        
         if resume_text:
-            # Prepare input prompt for Gemini API
             input_prompt = f"""
-            Hey act like a skilled or very experienced ATS (Application Tracking System)
-            with a deep understanding of tech fields, software engineering, data science, data analysis, AI/ML,
-            and big data engineering.
-            Your task is to evaluate the resume based on the given job description.
-            You must consider the job market to be very competitive, and you should provide
-            the best assistance for improving the resume. Assign the percentage Matching based on the job description 
-            and the missing keywords with high accuracy. 
+            Act as a skilled ATS (Applicant Tracking System) with deep understanding of tech fields, software engineering,
+            data science, data analysis, AI/ML, and big data engineering.
+            Evaluate the resume based on the given job description. Consider the job market very competitive and provide
+            the best assistance for improving the resume.
+            Assign the percentage Matching based on the job description and identify missing keywords with high accuracy.
+            Also suggest a few alternative job types the candidate might be suitable for.
+
             Resume: {resume_text}
             Job Description: {job_description}
-            I want the response in one single string with the structure:
-            {{"JD Match": "%", "MissingKeywords": [], "Profile Summary": ""}}
+
+            Respond with a JSON string structured as follows:
+            {{
+                "JD Match": "%",
+                "MissingKeywords": [],
+                "ProfileSummary": "",
+                "Advice": [],
+                "AlternativeJobs": []
+            }}
             """
-            
-            # Get response from Gemini API
+
             response = get_gemini_response(input_prompt)
-            
-            if response:
-                st.success("Evaluation completed.")
-                st.json(response)  # Displaying JSON structure in a readable format
+
+            # Clean up the response (remove ```json and other irregularities)
+            cleaned_response = re.sub(r'```json|```', '', response).strip()
+
+            if cleaned_response:
+                try:
+                    # Parse the cleaned_response as JSON
+                    result = json.loads(cleaned_response)
+                    
+                    # Display JD Match
+                    st.markdown("## Job Description Match")
+                    st.markdown(f"<h1 style='text-align: center; color: #1e90ff;'>{result['JD Match']}%</h1>", unsafe_allow_html=True)
+                    
+                    # Display Missing Keywords
+                    st.subheader("Missing Keywords")
+                    if result['MissingKeywords']:
+                        st.write(", ".join(result['MissingKeywords']))
+                    else:
+                        st.write("No missing keywords identified.")
+                    
+                    # Display Profile Summary
+                    st.subheader("Profile Summary")
+                    st.write(result['ProfileSummary'])
+                    
+                    # Display Advice for Improving Match
+                    st.subheader("How to Improve Your Match")
+                    if result['Advice']:
+                        for advice in result['Advice']:
+                            st.write(f"- {advice}")
+                    else:
+                        st.write("No specific advice provided.")
+                    
+                    # Display Alternative Job Types
+                    st.subheader("Alternative Job Types to Consider")
+                    if result['AlternativeJobs']:
+                        for job in result['AlternativeJobs']:
+                            st.write(f"- {job}")
+                    else:
+                        st.write("No alternative job types suggested.")
+                    
+                except json.JSONDecodeError as e:
+                    st.error(f"Failed to parse the response nicely.")
+                    st.write("Raw response:")
+                    st.write(response)
             else:
                 st.error("Failed to generate a response. Please try again.")
