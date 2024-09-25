@@ -127,7 +127,7 @@ if st.button("Submit"):
             Evaluate the resume based on the given job description. Consider the job market very competitive and provide
             the best assistance for improving the resume.
             Assign the percentage Matching based on the job description and identify missing keywords with high accuracy.
-            Also suggest a few alternative job types the candidate might be suitable for.
+            Also suggest only one best fit alternative job type the candidate might be suitable for.
 
             Resume: {resume_text}
             Job Description: {job_description}
@@ -138,7 +138,7 @@ if st.button("Submit"):
                 "MissingKeywords": [],
                 "ProfileSummary": "",
                 "Advice": [],
-                "AlternativeJobs": []
+                "AlternativeJob": ""
             }}
             """
 
@@ -154,7 +154,7 @@ if st.button("Submit"):
                     
                     # Display JD Match
                     st.markdown("## Job Description Match")
-                    st.markdown(f"<h1 style='text-align: center; color: #1e90ff;'>{result['JD Match']}%</h1>", unsafe_allow_html=True)
+                    st.markdown(f"<h1 style='text-align: center; color: #1e90ff;'>{result['JD Match']}</h1>", unsafe_allow_html=True)
                     
                     # Display Missing Keywords
                     st.subheader("Missing Keywords")
@@ -176,10 +176,10 @@ if st.button("Submit"):
                         st.write("No specific advice provided.")
                     
                     # Display Alternative Job Types
-                    st.subheader("Alternative Job Types to Consider")
-                    if result['AlternativeJobs']:
-                        for job in result['AlternativeJobs']:
-                            st.write(f"- {job}")
+                    st.subheader("Alternative Job Type to Consider")
+                    alternativeJob = result.get("AlternativeJob", "")
+                    if alternativeJob:
+                        st.write(alternativeJob)
                     else:
                         st.write("No alternative job types suggested.")
                     
